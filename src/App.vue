@@ -1,8 +1,9 @@
 <script setup>
-import TopBar from './components/TopBar.vue'
 import { ref } from 'vue'
+import Light from './components/icons/Light.vue'
 
 const showingModal = ref(false)
+const newNoteTitle = ref('')
 const newNoteText = ref('')
 const notes = ref([])
 const errorMessage = ref('')
@@ -18,12 +19,14 @@ const addNote = () => {
   }
   const date = new Date().toLocaleDateString('tr')
   notes.value.push({
+    title: newNoteTitle.value,
     id: Math.floor(Math.random() * 1000000),
     date: date,
     text: newNoteText.value,
     backgroundColor: getRandomColor()
   })
   newNoteText.value = ''
+  newNoteTitle.value = ''
   showingModal.value = false
   errorMessage.value = ''
 }
@@ -38,13 +41,14 @@ const closeModal = () => {
   <main>
     <div v-if="showingModal" class="overlay">
       <div class="modal">
+        <input v-model="newNoteTitle" placeholder="Title" />
         <textarea
           v-model.trim="newNoteText"
           name="note"
           id="note"
-          cols="30"
+          cols="10"
           rows="10"
-          placeholder="type some notes"
+          placeholder="Text"
         ></textarea>
         <p v-if="errorMessage && newNoteText.length < 10">{{ errorMessage }}</p>
         <button @click="addNote">Add Note</button>
@@ -63,6 +67,7 @@ const closeModal = () => {
           class="card"
           :style="{ backgroundColor: note.backgroundColor }"
         >
+          <p class="title">{{ note.title }}</p>
           <p class="main-text">{{ note.text }}</p>
           <p class="date">{{ note.date }}</p>
         </div>
@@ -76,8 +81,9 @@ const closeModal = () => {
 
 main {
   width: 100vw;
-  height: 100vw;
   max-width: 100%;
+  max-height: 100%;
+  font-family: 'Montserrat', cursive;
 }
 
 header {
@@ -86,6 +92,10 @@ header {
   align-items: center;
 }
 
+svg {
+  width: 500px;
+  height: 500px;
+}
 .container {
   max-width: 750px;
   padding: 10px;
@@ -107,7 +117,7 @@ header > button {
   cursor: pointer;
   background-color: #1f1f1f;
   border-radius: 100%;
-  color: wheat;
+  color: #f1f1f1;
   font-weight: bolder;
   font-size: 20px;
 }
@@ -127,9 +137,14 @@ header > button {
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 20px;
-  margin-trim: 45px;
   margin-right: 10px;
   margin-left: 10px;
+}
+
+.card .title {
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: 20px;
 }
 
 .date {
@@ -150,7 +165,8 @@ header > button {
 
 .modal {
   width: 500px;
-  background-color: wheat;
+  height: 70%;
+  background-color: rgb(255, 255, 255);
   border-radius: 10px;
   padding: 30px;
   position: relative;
@@ -163,18 +179,39 @@ header > button {
   font-family: 'Montserrat';
   font-size: 16px;
   width: 100%;
-  background-color: blueviolet;
+  background-color: #1f1f1f;
   border: none;
   color: white;
+  border-radius: 10px;
   cursor: pointer;
   margin-top: 15px;
 }
 
 .modal .close {
-  background-color: rgb(216, 56, 28);
+  color: #1f1f1f;
+  border: 1px solid #1f1f1f;
+  background-color: #f1f1f1;
 }
 
 .modal p {
   color: rgb(255, 0, 81);
+}
+
+input,
+textarea {
+  resize: none;
+  border-radius: 5px;
+  padding: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.355);
+  margin: 5px;
+}
+textarea:focus {
+  outline: 1px solid rgba(0, 0, 0, 1);
+  outline-offset: 0px;
+}
+
+input:focus {
+  outline: 1px solid rgba(0, 0, 0, 1);
+  outline-offset: 0px;
 }
 </style>
